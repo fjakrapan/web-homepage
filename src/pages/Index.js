@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from 'sweetalert2';
 import config from "../config";
+import MyModal from "../components/MyModal";
+
 
 function Index() {
     const [products, setProducts] = useState([]);
     const [carts, setCarts] = useState([]);
     const [recordInCarts, setRecordInCarts] = useState(0);
+    const [sumQty, setSumQty] = useState(0);
+    const [sumPrice, setSumPrice] = useState(0);
 
     useEffect(() => {
         fetchData();
+        fetchDataFromLocal();
     }, []);
 
     const fetchData = async () => {
@@ -29,17 +34,51 @@ function Index() {
 
     const addToCart = async (item) => {
         let arr = carts;
+
+        if (arr === null){
+            arr = [];
+        }
+
         arr.push(item);
 
         setCarts(arr);
-        setRecordInCarts(carts.length);
+        setRecordInCarts(arr.length);
+
+        localStorage.setItem('carts', JSON.stringify(carts));
+
+        fetchDataFromLocal();
+    }
+
+    const fetchDataFromLocal = () => {
+        const itemInCarts = JSON.parse(localStorage.getItem('carts'));
+
+        if (itemInCarts !== null ){ 
+        setCarts(itemInCarts);
+        setRecordInCarts(itemInCarts !== null ? itemInCarts.length : 0);
+
+        computerPriceAndQty(itemInCarts);
+        }
+    }
+
+    const computerPriceAndQty = (itemInCarts) => {
+        let sumQty = 0;
+        let sumPrice = 0;
+
+        for (let i = 0; i < itemInCarts.length; i++){
+            const item = itemInCarts[i];
+            sumQty++;
+            sumPrice += parseInt(item.price);
+        }
+
+        setSumPrice(sumPrice);
+        setSumQty(sumQty);
     }
 
     function showImage(item){
         if (item.img !== undefined){
             let imgPath = config.apiPath + '/uploads/' + item.img;
 
-            if (item.img == "") imgPath = "default_image.webp";
+            if (item.img === "") imgPath = "default_image.webp";
             return <img className="card-img-top" height='150px'src={imgPath} alt="" />
         }
 
@@ -53,7 +92,10 @@ function Index() {
             </div>
             <div className="float-end ">
                 ตะกร้าของฉัน
-                <button className="btn btn-outline-success ms-2 me-2">
+                <button 
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCart"
+                    className="btn btn-outline-success ms-2 me-2">
                     <i className="fa fa-shopping-cart me-2"></i>
                     {recordInCarts}
                 </button>
@@ -80,6 +122,37 @@ function Index() {
                 ): <></>}
             </div>
         </div>
+        <MyModal id="modalCart" title="ตะกร้าของฉัน">
+            <table className="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th className="text-end">price</th>
+                        <th className="text-end">qty</th>
+                        <th width="60px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {carts.length > 0 ? carts.map(item => 
+                        <tr>
+                            <td>{item.name}</td>
+                            <td className="text-end">{item.price.toLocaleString('th-Th')}</td>
+                            <td className="text-end">1</td>
+                            <td className="text-center">
+                                <button className="btn btn-danger">
+                                    <i className="fa fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    ): <></>}
+                </tbody>
+            </table>
+            <div className="text-center">
+                จำนวน {sumQty} รายการ เป็นเงิน {sumPrice} บาท 
+            </div>
+
+            
+        </MyModal>
     </>
 }
 
