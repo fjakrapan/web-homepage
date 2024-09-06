@@ -96,7 +96,7 @@ function Index() {
                     data-bs-toggle="modal"
                     data-bs-target="#modalCart"
                     className="btn btn-outline-success ms-2 me-2">
-                    <i className="fa fa-shopping-cart me-2"></i>
+                    <i className="fa fa-shopping-cart me-2" ></i>
                     {recordInCarts}
                 </button>
                 ชิ้น
@@ -139,7 +139,7 @@ function Index() {
                             <td className="text-end">{item.price.toLocaleString('th-Th')}</td>
                             <td className="text-end">1</td>
                             <td className="text-center">
-                                <button className="btn btn-danger">
+                                <button className="btn btn-danger" >
                                     <i className="fa fa-times"></i>
                                 </button>
                             </td>
@@ -148,7 +148,37 @@ function Index() {
                 </tbody>
             </table>
             <div className="text-center">
-                จำนวน {sumQty} รายการ เป็นเงิน {sumPrice} บาท 
+                จำนวน {sumQty.toLocaleString('th-Th')} รายการ เป็นเงิน {sumPrice.toLocaleString('th-Th')} บาท 
+            </div>
+
+            <div className="mt-3">
+                <div className="alert alert-info">
+                    <div>โปรดโอนไปยังบัญชี</div>
+                    <div>กสิกร นายลอง ทดสอบ 999-999-9999</div>
+                </div>
+                <div>
+                    <div>ชื่อผู้ซื้อ</div>
+                    <input className="form-control" />
+                </div>
+                <div className="mt-3">
+                    <div>เบอร์โทรติดต่อ</div>
+                    <input className="form-control" />
+                </div>
+                <div className="mt-3">
+                    <div>ที่อยู่จัดส่ง</div>
+                    <input className="form-control" />
+                </div>
+                <div className="mt-3">
+                    <div>วันที่โอน</div>
+                    <input className="form-control" type="date" />
+                </div>
+                <div className="mt-3">
+                    <div>เวลาที่โอนเงิน</div>
+                    <input className="form-control" type="time" />
+                </div>
+                <button className="btn btn-primary mt-3"> 
+                    <i className="fa fa-check me-2"></i>ยืนยันการซื้อ
+                </button>
             </div>
 
             
